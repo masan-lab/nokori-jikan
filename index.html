@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>人生の残り時間</title>
+<meta name="theme-color" content="#0F1628">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="残り時間">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Zen+Old+Mincho:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0F1628; --bg2:#172038; --paper:rgba(255,255,255,.03); --ink:#EDE6D6; --sub:#A39C8C;
+  --line:rgba(200,169,106,.28); --gold:#C8A96A; --gold2:#E9D4A0; --gold3:#9C7C3E;
+  --jade:#9CC7B0; --jade2:#CFE6D9; --jade3:#5E8F76; --warn:#E3A08A; --track:rgba(255,255,255,.07);
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --bg:#F6F2E9; --bg2:#EDE6D6; --paper:rgba(255,255,255,.55); --ink:#1B2336; --sub:#6E6758;
+    --line:rgba(156,124,62,.35); --gold:#9C7C3E; --gold2:#B8975A; --gold3:#7A5E27;
+    --jade:#4F7F66; --jade2:#6F9C84; --jade3:#3C6450; --warn:#A5482E; --track:rgba(27,35,54,.08);
+  }
+}
+:root[data-theme="light"]{
+  --bg:#F6F2E9; --bg2:#EDE6D6; --paper:rgba(255,255,255,.55); --ink:#1B2336; --sub:#6E6758;
+  --line:rgba(156,124,62,.35); --gold:#9C7C3E; --gold2:#B8975A; --gold3:#7A5E27;
+  --jade:#4F7F66; --jade2:#6F9C84; --jade3:#3C6450; --warn:#A5482E; --track:rgba(27,35,54,.08);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
+body{margin:0;min-height:100%;color:var(--ink);
+  background:radial-gradient(120% 70% at 50% -10%, var(--bg2) 0%, var(--bg) 60%) var(--bg);
+  font-family:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",serif;line-height:1.8;
+  -webkit-text-size-adjust:100%}
+main{max-width:540px;margin:0 auto;padding:40px 22px 56px}
+.num-font{font-family:"Cormorant Garamond","Zen Old Mincho",serif}
+
+header{text-align:center;margin-bottom:34px}
+.date{font-size:.85rem;color:var(--sub);letter-spacing:.12em;margin:0 0 14px}
+h1{font-weight:500;font-size:1.7rem;letter-spacing:.32em;margin:0;padding-left:.32em}
+.sub-en{font-family:"Cormorant Garamond",serif;font-style:italic;color:var(--gold);font-size:1.05rem;margin:2px 0 0;letter-spacing:.04em}
+.orn{display:flex;align-items:center;justify-content:center;gap:10px;margin:18px auto 0;width:60%}
+.orn::before,.orn::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.orn::after{background:linear-gradient(90deg,var(--gold),transparent)}
+.orn span{width:6px;height:6px;border:1px solid var(--gold);transform:rotate(45deg)}
+
+/* 入力 */
+details.inputs{border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+details.inputs summary{list-style:none;cursor:pointer;padding:14px 2px;display:flex;justify-content:space-between;align-items:center;font-size:.92rem;color:var(--sub);letter-spacing:.08em}
+details.inputs summary::-webkit-details-marker{display:none}
+details.inputs summary::after{content:"＋";color:var(--gold);font-size:1rem}
+details[open].inputs summary::after{content:"－"}
+details.inputs summary:focus-visible{outline:1px solid var(--gold);outline-offset:2px}
+.fields{padding:0 2px 10px}
+.field{padding:12px 0;border-top:1px solid var(--line)}
+.field label{display:block;font-size:.9rem;letter-spacing:.06em;margin-bottom:8px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+input{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--line);
+  border-radius:2px;padding:9px 10px;font-size:1rem;color-scheme:dark}
+@media (prefers-color-scheme:light){ :root:not([data-theme="dark"]) input{color-scheme:light} }
+input[type=date]{flex:1 1 170px;min-width:0}
+.age{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--sub)}
+.age input{width:70px;text-align:right}
+input:focus-visible{outline:1px solid var(--gold);outline-offset:1px}
+.note{font-size:.82rem;color:var(--warn);margin:6px 0 0}
+
+/* 年齢 */
+.now{text-align:center;margin:38px 0 6px}
+.now .v{font-size:3.4rem;line-height:1;color:var(--ink);font-weight:500}
+.now .v small{font-family:"Zen Old Mincho",serif;font-size:.95rem;margin-left:6px;color:var(--sub)}
+.now p{margin:6px 0 0;font-size:.85rem;color:var(--sub);letter-spacing:.08em}
+
+/* セクション */
+.count{margin-top:44px}
+.count-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.count h2{font-weight:500;font-size:1.2rem;letter-spacing:.2em;margin:0}
+.count .target{font-size:.8rem;color:var(--sub);margin:0;text-align:right;line-height:1.4}
+
+.prog{margin:22px 0 6px;display:flex;align-items:center;gap:16px}
+.pct{font-size:2.6rem;line-height:1;font-weight:600;white-space:nowrap;
+  background:linear-gradient(170deg,var(--c2),var(--c) 55%,var(--c3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.pct small{font-size:.5em;margin-left:2px}
+.bar-wrap{flex:1}
+.bar-label{font-size:.78rem;color:var(--sub);letter-spacing:.06em;margin-bottom:6px}
+.bar{position:relative;height:4px;background:var(--track)}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--c3),var(--c2));transition:width 1.2s cubic-bezier(.2,.7,.2,1)}
+.bar i::after{content:"";position:absolute;right:-4px;top:-3px;width:10px;height:10px;border-radius:50%;background:var(--c2);box-shadow:0 0 10px var(--c)}
+
+.nums{display:grid;grid-template-columns:1fr 1fr;margin-top:22px}
+.num{padding:16px 6px 14px;text-align:center;border-bottom:1px solid var(--line)}
+.num:nth-child(odd){border-right:1px solid var(--line)}
+.num:nth-child(n+3){border-bottom:0}
+.num .v{font-size:clamp(2rem,9.5vw,2.8rem);font-weight:600;line-height:1.05;font-variant-numeric:lining-nums tabular-nums;
+  background:linear-gradient(170deg,var(--c2),var(--c) 55%,var(--c3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.num .v small{font-family:"Zen Old Mincho",serif;font-size:.42em;font-weight:500;margin-left:3px}
+.num .u{font-size:.78rem;color:var(--sub);letter-spacing:.1em;margin-top:4px}
+.detail{text-align:center;font-size:.88rem;margin:14px 0 0;padding-top:12px;border-top:1px solid var(--line);letter-spacing:.06em}
+.passed{padding:16px;border:1px solid var(--line);color:var(--sub);font-size:.9rem;text-align:center;margin-top:18px}
+.life{--c:var(--gold);--c2:var(--gold2);--c3:var(--gold3)}
+.health{--c:var(--jade);--c2:var(--jade2);--c3:var(--jade3)}
+
+.empty{margin-top:34px;padding:24px;border:1px solid var(--line);color:var(--sub);font-size:.9rem;text-align:center}
+.foot{margin-top:48px;font-size:.74rem;color:var(--sub);text-align:center;line-height:1.7}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="date" id="today"></p>
+    <h1>人生の残り時間</h1>
+    <p class="sub-en">The time that remains</p>
+    <div class="orn" aria-hidden="true"><span></span></div>
+  </header>
+
+  <details class="inputs" id="inputs">
+    <summary>日付の設定</summary>
+    <div class="fields">
+      <div class="field">
+        <label for="birth">生年月日</label>
+        <input type="date" id="birth">
+      </div>
+      <div class="field">
+        <label for="life">寿命の予定日</label>
+        <div class="row">
+          <input type="date" id="life">
+          <span class="age"><input type="number" id="lifeAge" min="1" max="130" inputmode="numeric" aria-label="寿命の年齢">歳で設定</span>
+        </div>
+      </div>
+      <div class="field">
+        <label for="health">健康寿命の予定日</label>
+        <div class="row">
+          <input type="date" id="health">
+          <span class="age"><input type="number" id="healthAge" min="1" max="130" inputmode="numeric" aria-label="健康寿命の年齢">歳で設定</span>
+        </div>
+        <p class="note" id="note"></p>
+      </div>
+    </div>
+  </details>
+
+  <div id="out"></div>
+
+  <p class="foot">入力内容はこの端末のブラウザにだけ保存されます。<br>「あと何ヶ月・何年」は満の月数・年数（切り捨て）です。</p>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const DAY = 86400000;
+const KEY = 'life-countdown-v1';
+const WD = ['日','月','火','水','木','金','土'];
+
+function parse(v){ if(!v) return null; const [y,m,d]=v.split('-').map(Number); return new Date(y,m-1,d); }
+function fmt(d){ return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`; }
+function iso(d){ const p=n=>String(n).padStart(2,'0'); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`; }
+function today(){ const n=new Date(); return new Date(n.getFullYear(),n.getMonth(),n.getDate()); }
+function daysBetween(a,b){ return Math.round((Date.UTC(b.getFullYear(),b.getMonth(),b.getDate())-Date.UTC(a.getFullYear(),a.getMonth(),a.getDate()))/DAY); }
+function addYears(d,y){ const r=new Date(d.getFullYear()+y,d.getMonth(),d.getDate()); if(r.getMonth()!==d.getMonth()) r.setDate(0); return r; }
+function addMonths(d,m){ const r=new Date(d.getFullYear(),d.getMonth()+m,d.getDate()); if(r.getDate()!==d.getDate()) r.setDate(0); return r; }
+function fullMonths(a,b){ let m=(b.getFullYear()-a.getFullYear())*12+(b.getMonth()-a.getMonth()); if(addMonths(a,m)>b) m--; return m; }
+function ageAt(birth,d){ return Math.floor(fullMonths(birth,d)/12); }
+const n = x => x.toLocaleString('ja-JP');
+
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify({birth:$('birth').value,life:$('life').value,health:$('health').value})); }catch(e){}
+}
+function load(){
+  try{ const s=JSON.parse(localStorage.getItem(KEY)||'null'); if(s){ $('birth').value=s.birth||''; $('life').value=s.life||''; $('health').value=s.health||''; } }catch(e){}
+}
+
+function syncAges(){
+  const b=parse($('birth').value);
+  [['life','lifeAge'],['health','healthAge']].forEach(([d,a])=>{
+    const t=parse($(d).value);
+    if(document.activeElement!==$(a)) $(a).value = (b&&t&&t>b) ? ageAt(b,t) : '';
+  });
+}
+
+function block(cls,title,target,t0,b){
+  if(!target) return '';
+  const days=daysBetween(t0,target);
+  const head=`<div class="count-head"><h2>${title}</h2><p class="target">${fmt(target)}<br>${ageAt(b,target)}歳</p></div>`;
+  if(days<=0){
+    return `<section class="count ${cls}">${head}<div class="passed">予定日を過ぎています。日付を見直してみてください。</div></section>`;
+  }
+  const total=daysBetween(b,target);
+  const pct=Math.max(0,Math.min(100,daysBetween(b,t0)/total*100));
+  const months=fullMonths(t0,target);
+  const years=Math.floor(months/12);
+  const rest=daysBetween(addMonths(t0,months),target);
+  return `<section class="count ${cls}">
+    ${head}
+    <div class="prog">
+      <div class="pct num-font">${pct.toFixed(1)}<small>%</small></div>
+      <div class="bar-wrap">
+        <div class="bar-label">${title.replace('まで','')}までの道のりのうち、ここまで来ました</div>
+        <div class="bar"><i data-w="${pct}" style="width:0"></i></div>
+      </div>
+    </div>
+    <div class="nums">
+      <div class="num"><div class="v num-font">${n(days)}<small>日</small></div><div class="u">あと何日</div></div>
+      <div class="num"><div class="v num-font">${n(Math.floor(days/7))}<small>週</small></div><div class="u">あと何週間</div></div>
+      <div class="num"><div class="v num-font">${n(months)}<small>ヶ月</small></div><div class="u">あと何ヶ月</div></div>
+      <div class="num"><div class="v num-font">${n(years)}<small>年</small></div><div class="u">あと何年</div></div>
+    </div>
+    <p class="detail">あと ${years}年 ${months%12}ヶ月 ${rest}日</p>
+  </section>`;
+}
+
+function render(){
+  const b=parse($('birth').value), L=parse($('life').value), H=parse($('health').value);
+  const t=today();
+  $('today').textContent=`${fmt(t)}（${WD[t.getDay()]}）`;
+  let note='';
+  if(L&&H&&H>L) note='健康寿命の日が、寿命の日より後になっています。';
+  if(b&&((L&&L<=b)||(H&&H<=b))) note='予定日は生年月日より後の日付にしてください。';
+  $('note').textContent=note;
+  syncAges();
+
+  if(!b||(!L&&!H)){
+    $('inputs').open=true;
+    $('out').innerHTML=`<div class="empty">「日付の設定」から生年月日と予定日を入れると、<br>ここに残り時間が表示されます。</div>`;
+    return;
+  }
+  const lived=daysBetween(b,t);
+  const nowHtml = t>=b ? `<section class="now">
+      <div class="v num-font">${ageAt(b,t)}<small>歳</small></div>
+      <p>生まれてから ${n(lived)} 日目</p>
+    </section>` : '';
+
+  $('out').innerHTML = nowHtml + block('health','健康寿命まで',H,t,b) + block('life','寿命まで',L,t,b);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    document.querySelectorAll('.bar i').forEach(el=>el.style.width=el.dataset.w+'%');
+  }));
+}
+
+function fromAge(dateId,ageId){
+  const b=parse($('birth').value), a=parseInt($(ageId).value,10);
+  if(!b||!a||a<1||a>130) return;
+  $(dateId).value=iso(addYears(b,a));
+  save(); render();
+}
+
+['birth','life','health'].forEach(id=>$(id).addEventListener('input',()=>{save();render();}));
+$('lifeAge').addEventListener('input',()=>fromAge('life','lifeAge'));
+$('healthAge').addEventListener('input',()=>fromAge('health','healthAge'));
+$('lifeAge').addEventListener('blur',syncAges);
+$('healthAge').addEventListener('blur',syncAges);
+
+load(); render();
+</script>
+</body>
+</html>
